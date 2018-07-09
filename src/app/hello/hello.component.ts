@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-hello',
@@ -7,5 +7,10 @@ import { Component, Input } from '@angular/core';
 })
 export class HelloComponent  {
   @Input() name: string;
+  @Output() highlight: EventEmitter<string> = new EventEmitter();
   constructor() { }
+
+  click() {
+    this.highlight.emit('highlighted');
+  }
 }
