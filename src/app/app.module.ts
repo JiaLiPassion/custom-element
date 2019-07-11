@@ -1,19 +1,27 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, Injector, ComponentFactoryResolver } from '@angular/core';
 
-import { AppComponent } from './app.component';
-import { HelloComponent } from './hello/hello.component';
+import { AppFormComponent } from './app-form/app-form.component';
+import { AngularCustomElementsBridge } from './app-form/angular-elements-bridge';
+import { CustomElementsWrapper } from './app-form/custom-elements-wrapper';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HelloComponent
-  ],
-  imports: [
-    BrowserModule
-  ],
-  entryComponents: [HelloComponent],
+  declarations: [AppFormComponent],
+  imports: [BrowserModule],
+  entryComponents: [AppFormComponent],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: []
 })
-export class AppModule { }
+export class AppModule {
+  constructor(private injector: Injector) {}
+
+  ngDoBootstrap() {
+    const factory = this.injector
+      .get(ComponentFactoryResolver)
+      .resolveComponentFactory(AppFormComponent);
+    const bridge = new AngularCustomElementsBridge(this.injector, AppFormComponent, factory);
+    bridge.prepare();
+    CustomElementsWrapper.bridge = bridge;
+    customElements.define('app-form', CustomElementsWrapper);
+  }
+}

@@ -1,25 +1,32 @@
-import {ApplicationRef, ChangeDetectorRef, ComponentFactory, ComponentFactoryResolver,
-   ComponentRef, EventEmitter, Injector} from '@angular/core';
+import {
+  ApplicationRef,
+  ComponentFactory,
+  ComponentFactoryResolver,
+  ComponentRef,
+  EventEmitter,
+  Injector
+} from '@angular/core';
 import { Observable, merge, Subscription } from 'rxjs';
-import {map} from 'rxjs/operators';
-import {HelloComponent} from './hello.component';
+import { map } from 'rxjs/operators';
 
-export class AngularCustomElementBridge {
-  componentRef: ComponentRef<HelloComponent>;
-  componentFactory: ComponentFactory<HelloComponent>;
+export class AngularCustomElementsBridge {
+  static attributes: string[] = [];
+  componentRef: ComponentRef<any>;
   initialInputValues = {};
   applicationRef: ApplicationRef;
-  changeDetectorRef: ChangeDetectorRef;
   outputEvents: Observable<any>;
   ngElementEventsSubscription: Subscription;
 
-  constructor(private injector: Injector, private component) {
-    this.changeDetectorRef = this.injector.get(ChangeDetectorRef);
-  }
+  constructor(
+    private injector: Injector,
+    private component,
+    private componentFactory: ComponentFactory<any>
+  ) {}
 
   prepare() {
-    this.componentFactory = this.injector.get(ComponentFactoryResolver)
-                                .resolveComponentFactory(this.component);
+    this.componentFactory.inputs.forEach(input =>
+      AngularCustomElementsBridge.attributes.push(input.templateName)
+    );
   }
 
   initComponent(element: HTMLElement) {
@@ -35,26 +42,22 @@ export class AngularCustomElementBridge {
     // const projectableNodes =
     // this.injector.get(ComponentFactoryResolver).resolveComponentFactory(this.component);
     // Here we got all we need, we will initialize the component
-    this.componentRef =
-        this.componentFactory.create(componentInjector, null, element);
+    this.componentRef = this.componentFactory.create(componentInjector, null, element);
 
     // Then we need to check whether we need to initialize value of component's
     // input the case is, before Angular Element is loaded, user may already set
     // element's property. those values will be kept in an initialInputValues
     // map.
     this.componentFactory.inputs.forEach(
-        prop => this.componentRef.instance[prop.propName] =
-            this.initialInputValues[prop.propName]);
+      prop => (this.componentRef.instance[prop.propName] = this.initialInputValues[prop.propName])
+    );
 
     // subscribe to event emitters of Angular Component and dispatch Custom
     // Events
-    const eventEmitters =
-        this.componentFactory.outputs.map(({propName, templateName}) => {
-          const emitter = (this.componentRef.instance as any)[propName] as
-              EventEmitter<any>;
-          return emitter.pipe(
-              map((value: any) => ({name: templateName, value})));
-        });
+    const eventEmitters = this.componentFactory.outputs.map(({ propName, templateName }) => {
+      const emitter = (this.componentRef.instance as any)[propName] as EventEmitter<any>;
+      return emitter.pipe(map((value: any) => ({ name: templateName, value })));
+    });
     // merge all those output event emitter to a single stream.
     this.outputEvents = merge(...eventEmitters);
     // Listen for events from the merged stream and dispatch them as custom
@@ -67,7 +70,7 @@ export class AngularCustomElementBridge {
 
     // then we will trigger a change detection so the component will be rendered
     // in next tick.
-    this.changeDetectorRef.detectChanges();
+    this.componentRef.changeDetectorRef.detectChanges();
     this.applicationRef = this.injector.get(ApplicationRef);
 
     // finally we will attach this component's HostView to applicationRef
@@ -88,6 +91,6 @@ export class AngularCustomElementBridge {
       return;
     }
     this.componentRef.instance[propName] = value;
-    this.changeDetectorRef.detectChanges();
+    this.componentRef.changeDetectorRef.detectChanges();
   }
 }

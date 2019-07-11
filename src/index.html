@@ -1,23 +1,36 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Hello</title>
-  <base href="/">
+<html>
+<script>
+  window.addEventListener('load', () => {
+    const appForm = document.querySelector('app-form');
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <script>
-    window.onload = function() {
-      var hello = document.querySelector('hello-elem');
-      hello.addEventListener('highlight', function() {
-        hello.setAttribute('name', 'highlighted');
-      });
-    };
-  </script>
-</head>
+    const btnAttr = document.getElementById('btnChangeLabelByAttr');
+    btnAttr.addEventListener('click', () => {
+      appForm.setAttribute('label', 'new label');
+    });
+    const btnProp = document.getElementById('btnChangeLabelByProp');
+    btnProp.addEventListener('click', () => {
+      appForm.label = 'new label';
+    });
+    const btnReset = document.getElementById('btnReset');
+    btnReset.addEventListener('click', () => {
+      appForm.label = 'my label';
+    });
+
+    appForm.addEventListener('submitted', (event) => {
+      document.getElementById('submitResult').textContent = event.detail;
+    });
+  });
+</script>
+
 <body>
-  <app-root></app-root>
-  <hello-elem name="Element"></hello-elem>
+  <label>Label outside</label> <br />
+  <app-form label="my label"></app-form>
+  <br />
+  <button id="btnChangeLabelByAttr">Update Label by Attribute</button>
+  <button id="btnChangeLabelByProp">Update Label by Property</button>
+  <button id="btnReset">Reset</button>
+  <br />
+  <label id="submitResult"></label>
 </body>
+
 </html>
