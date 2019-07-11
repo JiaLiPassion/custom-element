@@ -5,15 +5,18 @@ import {
   Output,
   EventEmitter,
   ViewChild,
-  ElementRef
+  ElementRef,
+  ViewEncapsulation
 } from '@angular/core';
 
 @Component({
   selector: 'app-app-form',
   template: `
-    <label>{{ label }}</label> <input #input /><button (click)="submit()">Submit</button>
+    <label>{{ label }}</label> <input #input /><button (click)="submit()">Submit</button><br />
+    Projection: <slot></slot>
   `,
-  styleUrls: ['./app-form.component.css']
+  styleUrls: ['./app-form.component.css'],
+  encapsulation: ViewEncapsulation.ShadowDom
 })
 export class AppFormComponent implements OnInit {
   @Input() label: string;

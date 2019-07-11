@@ -82,6 +82,10 @@ export class AngularCustomElementsBridge {
     this.ngElementEventsSubscription.unsubscribe();
   }
 
+  getInput(propName: string) {
+    return this.componentRef && this.componentRef.instance[propName];
+  }
+
   setInput(propName: string, value: string) {
     if (!this.componentRef) {
       this.initialInputValues[propName] = value;

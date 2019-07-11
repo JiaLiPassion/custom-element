@@ -1,4 +1,9 @@
 <html>
+<style>
+  html {
+    --label-color: blue;
+  }
+</style>
 <script>
   window.addEventListener('load', () => {
     const appForm = document.querySelector('app-form');
@@ -24,7 +29,9 @@
 
 <body>
   <label>Label outside</label> <br />
-  <app-form label="my label"></app-form>
+  <app-form label="my label">
+    Projection content
+  </app-form>
   <br />
   <button id="btnChangeLabelByAttr">Update Label by Attribute</button>
   <button id="btnChangeLabelByProp">Update Label by Property</button>
