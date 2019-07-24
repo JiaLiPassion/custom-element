@@ -3,6 +3,14 @@
   html {
     --label-color: blue;
   }
+
+  label {
+    font-size: 300%;
+  }
+
+  button {
+    font-size: 300%;
+  }
 </style>
 <script>
   window.addEventListener('load', () => {
@@ -30,7 +38,7 @@
 <body>
   <label>Label outside</label> <br />
   <app-form label="my label">
-    Projection content
+    <label>Projection content</label>
   </app-form>
   <br />
   <button id="btnChangeLabelByAttr">Update Label by Attribute</button>

@@ -70,7 +70,7 @@ export class AngularCustomElementsBridge {
 
     // then we will trigger a change detection so the component will be rendered
     // in next tick.
-    this.componentRef.changeDetectorRef.detectChanges();
+    // this.componentRef.changeDetectorRef.detectChanges();
     this.applicationRef = this.injector.get(ApplicationRef);
 
     // finally we will attach this component's HostView to applicationRef
@@ -95,6 +95,6 @@ export class AngularCustomElementsBridge {
       return;
     }
     this.componentRef.instance[propName] = value;
-    this.componentRef.changeDetectorRef.detectChanges();
+    // this.componentRef.changeDetectorRef.detectChanges();
   }
 }

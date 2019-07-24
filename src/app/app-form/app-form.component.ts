@@ -13,7 +13,7 @@ import {
   selector: 'app-app-form',
   template: `
     <label>{{ label }}</label> <input #input /><button (click)="submit()">Submit</button><br />
-    Projection: <slot></slot>
+    <slot></slot>
   `,
   styleUrls: ['./app-form.component.css'],
   encapsulation: ViewEncapsulation.ShadowDom

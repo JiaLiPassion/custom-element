@@ -1,3 +1,12 @@
 label {
   color: var(--label-color, red);
+  font-size: 300%;
+}
+
+button {
+  font-size: 300%;
+}
+
+input {
+  font-size: 300%;
 }
